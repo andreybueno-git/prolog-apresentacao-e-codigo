@@ -1,0 +1,80 @@
+/* Abertura local para aprovação: papel, tinta e um filme de seis segundos. */
+.preloader[hidden] { display: none; }
+.preloader {
+  position: fixed; inset: 0; z-index: 100;
+  isolation: isolate; overflow: hidden;
+  background: #e9e3d3; color: #2b2722;
+  opacity: 1; transition: opacity 220ms ease;
+  font-family: 'Courier New', Courier, monospace;
+}
+.preloader--saindo { opacity: 0; pointer-events: none; }
+.abertura__video {
+  position: absolute; inset: 0; z-index: -2;
+  display: block; width: 100%; height: 100%;
+  object-fit: cover; object-position: center; background: #e9e3d3;
+}
+.preloader::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, #e9e3d350, transparent 22%, transparent 66%, #e9e3d380);
+}
+.abertura__edicao {
+  position: absolute; top: max(24px, env(safe-area-inset-top));
+  left: clamp(22px, 4vw, 64px); margin: 0;
+  padding: 8px 10px; border-left: 2px solid #a83a2b;
+  background: #f0ebdded; color: #615c50;
+  font-size: 11px; line-height: 1.5; letter-spacing: .09em; text-transform: uppercase;
+}
+.abertura__faixa {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 28px; padding: 24px clamp(22px, 4vw, 64px) max(24px, env(safe-area-inset-bottom));
+  border-top: 0; background: linear-gradient(0deg, #f0ebddf2, #f0ebddc7 55%, #f0ebdd00);
+}
+.abertura__titulo {
+  margin: 0; color: #2b2722; font-size: clamp(34px, 4vw, 58px);
+  font-weight: 700; line-height: 1.05; letter-spacing: -.075em;
+}
+.abertura__titulo span { color: #a83a2b; font-size: .65em; letter-spacing: -.12em; }
+.abertura__subtitulo { margin: 7px 0 0; color: #615c50; font-size: 12px; line-height: 1.5; }
+.abertura__acoes { display: grid; justify-items: end; gap: 11px; }
+.abertura__botoes { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.abertura__botao {
+  appearance: none; display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; padding: 11px 15px; border: 1px solid #615c50; border-radius: 0;
+  background: #f0ebdd; color: #2b2722;
+  font: 12px/1.4 'Courier New', Courier, monospace; text-decoration: none; cursor: pointer;
+}
+.abertura__botao:hover { background: #e9e3d3; border-color: #2b2722; }
+.abertura__botao[hidden] { display: none; }
+.abertura__botao:focus-visible { outline: 2px solid #a83a2b; outline-offset: 4px; }
+.abertura__botao--principal { background: #a83a2b; border-color: #a83a2b; color: #f0ebdd; }
+.abertura__botao--principal:hover { background: #8c3024; border-color: #8c3024; }
+.abertura__status { margin: 0; max-width: 44ch; color: #615c50; font-size: 11px; line-height: 1.6; text-align: right; }
+.abertura__progresso { position: absolute; top: -2px; left: 0; right: 0; height: 2px; overflow: hidden; }
+.abertura__progresso::after {
+  content: ''; display: block; width: 28%; height: 100%; background: #a83a2b;
+  animation: abertura-carrega 1.65s ease-in-out infinite alternate;
+}
+[data-modo="cinema"] .abertura__progresso::after {
+  width: 100%; animation: none; transform-origin: left center; transform: scaleX(var(--progresso, 0));
+}
+.carregando .deck, .carregando .trilho, .carregando .contador, .carregando .dica { visibility: hidden; }
+.preview-abertura { margin: 0; min-height: 100dvh; background: #e9e3d3; }
+.preview-abertura .abertura__acoes { max-width: 620px; }
+@keyframes abertura-carrega { from { transform: translateX(-100%); } to { transform: translateX(360%); } }
+@media (max-width: 700px) {
+  .abertura__faixa { align-items: flex-start; flex-direction: column; gap: 17px; padding-block: 19px; }
+  .abertura__acoes { width: 100%; justify-items: start; }
+  .abertura__botoes { justify-content: flex-start; }
+  .abertura__status { text-align: left; }
+  .abertura__edicao { max-width: calc(100% - 44px); font-size: 10px; }
+}
+@media (max-height: 480px) and (min-width: 701px) {
+  .abertura__faixa { padding-block: 14px; }
+  .abertura__titulo { font-size: 32px; }
+  .abertura__edicao { top: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .preloader { transition: none; }
+  .abertura__progresso::after { animation: none; width: 100%; transform: none; }
+}

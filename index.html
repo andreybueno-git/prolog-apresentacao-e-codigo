@@ -742,10 +742,123 @@ td:first-child { font-weight: 700; white-space: nowrap; }
   body::after { display: none; }
 }
 </style>
+<link rel="stylesheet" href="abertura.css?v=3">
 </head>
 <body>
 
-<main class="deck" id="deck">
+<div class="preloader" id="preloader" hidden>
+  <video class="abertura__video" id="abertura-video" muted playsinline preload="none"
+         poster="assets/abertura-surreal-poster.jpg" aria-hidden="true">
+    <source data-src="assets/abertura-surreal.mp4" type="video/mp4">
+  </video>
+  <p class="abertura__edicao">Paradigma lógico · Grupo 4</p>
+  <div class="abertura__faixa">
+    <div class="abertura__progresso" aria-hidden="true"></div>
+    <div>
+      <p class="abertura__titulo"><span aria-hidden="true">?-</span> Prolog.</p>
+      <p class="abertura__subtitulo">a máquina de provar</p>
+    </div>
+    <div class="abertura__acoes">
+      <button class="abertura__botao" id="abrir-slides" type="button">Pular abertura <span aria-hidden="true">&nbsp;→</span></button>
+      <p class="abertura__status" id="abertura-status" role="status">Preparando a apresentação...</p>
+    </div>
+  </div>
+</div>
+<script>
+/* Sem JavaScript, a apresentação fica visível e o vídeo não é solicitado.
+   A abertura toca uma vez até o fim; Pular e falhas liberam os slides. */
+(function () {
+  "use strict";
+  var raiz = document.documentElement;
+  var tela = document.getElementById("preloader");
+  var botao = document.getElementById("abrir-slides");
+  var video = document.getElementById("abertura-video");
+  var fonte = video.querySelector("source");
+  var status = document.getElementById("abertura-status");
+  var movimentoReduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var cinema = !movimentoReduzido;
+  var aberto = false, fontesProntas = false, imagemPronta = false;
+  var ultimoTempo = -1;
+  var limite = setTimeout(abrir, cinema ? 8000 : 4000);
+
+  function abrir() {
+    if (aberto) return;
+    aberto = true;
+    clearTimeout(limite);
+    video.pause();
+    raiz.classList.remove("carregando");
+    tela.classList.add("preloader--saindo");
+    var deck = document.getElementById("deck");
+    if (document.activeElement === botao && deck) deck.focus({ preventScroll: true });
+    tela.setAttribute("aria-hidden", "true");
+    botao.disabled = true;
+    setTimeout(function () { tela.hidden = true; }, movimentoReduzido ? 0 : 220);
+    document.dispatchEvent(new Event("apresentacao:aberta"));
+  }
+  function conferir() {
+    if (!cinema && fontesProntas && imagemPronta) abrir();
+  }
+  function falhaVideo() {
+    video.pause();
+    // Um vídeo indisponível não segura o público.
+    if (cinema) abrir();
+  }
+  function reproduzir() {
+    if (aberto || movimentoReduzido || document.visibilityState !== "visible") return;
+    var tentativa = video.play();
+    if (tentativa && tentativa.then) {
+      tentativa.then(function () { if (aberto) video.pause(); }).catch(falhaVideo);
+    }
+  }
+  window.preloadApresentacao = {
+    pronto: function () { imagemPronta = true; conferir(); }
+  };
+  botao.addEventListener("click", abrir);
+  document.addEventListener("keydown", function (e) {
+    if (!aberto && e.key === "Escape") { e.preventDefault(); abrir(); }
+  });
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState !== "visible") video.pause();
+    else reproduzir();
+  });
+  video.addEventListener("ended", function () { if (cinema) abrir(); });
+  video.addEventListener("error", falhaVideo);
+  fonte.addEventListener("error", falhaVideo);
+  video.addEventListener("timeupdate", function () {
+    // O limite é de inatividade, para não cortar um filme que está avançando.
+    if (cinema && !aberto && video.currentTime > ultimoTempo) {
+      ultimoTempo = video.currentTime;
+      clearTimeout(limite);
+      limite = setTimeout(abrir, 8000);
+    }
+    if (cinema && isFinite(video.duration) && video.duration > 0) {
+      tela.style.setProperty("--progresso", Math.min(1, video.currentTime / video.duration));
+    }
+  });
+  document.addEventListener("DOMContentLoaded", function () {
+    if (document.fonts) {
+      Promise.allSettled([
+        document.fonts.load('400 16px "Courier Prime"'),
+        document.fonts.load('700 16px "Courier Prime"'),
+        document.fonts.load('italic 400 16px "Courier Prime"'),
+        document.fonts.load('400 64px "Archivo Black"')
+      ]).then(function () { fontesProntas = true; conferir(); });
+    } else { fontesProntas = true; conferir(); }
+  }, { once: true });
+  tela.dataset.modo = cinema ? "cinema" : "carregamento";
+  if (cinema) status.textContent = "Abertura · 6 segundos";
+  tela.hidden = false;
+  raiz.classList.add("carregando");
+  if (!movimentoReduzido) {
+    video.muted = true;
+    fonte.src = fonte.dataset.src;
+    video.load();
+    reproduzir();
+  }
+})();
+</script>
+
+<main class="deck" id="deck" tabindex="-1">
 
   <!-- ============================================================
        HERO
@@ -1294,7 +1407,7 @@ BLOQUEADAS
 <p class="contador" id="contador"><b>01</b> / 11</p>
 <p class="dica" id="dica"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> para navegar</p>
 
-<script src="fluido.js?v=9"></script>
+<script src="fluido.js?v=10"></script>
 <script>
 (function () {
   "use strict";
@@ -1350,6 +1463,7 @@ BLOQUEADAS
   }
 
   document.addEventListener("keydown", function (e) {
+    if (document.documentElement.classList.contains("carregando")) return;
     if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
     if (e.key === "ArrowDown" || e.key === "ArrowRight" ||
         e.key === "PageDown" || e.key === " ") {
@@ -1455,7 +1569,7 @@ BLOQUEADAS
   // plano os temporizadores são estrangulados e o texto sairia aos
   // trancos, ou nem sairia.
   function armarDatilografia(raiz, atraso) {
-    if (!datilo) return;
+    if (!datilo || document.documentElement.classList.contains("carregando")) return;
     var relogio = atraso;
     raiz.querySelectorAll('[data-parte="letras"]').forEach(function (el) {
       if (el._datilografado) return;
@@ -1467,7 +1581,19 @@ BLOQUEADAS
     });
   }
 
-  armarDatilografia(document.getElementById("hero"), 320);
+  function iniciarTitulos() {
+    armarDatilografia(slides[atual], 260);
+    // A rede de segurança conta depois da abertura, não sob o preload.
+    setTimeout(function () {
+      document.querySelectorAll(".letra").forEach(function (l) {
+        l.className = "letra letra--batida";
+      });
+      document.querySelectorAll(".cursor").forEach(function (c) { c.remove(); });
+    }, 9000);
+  }
+  if (document.documentElement.classList.contains("carregando")) {
+    document.addEventListener("apresentacao:aberta", iniciarTitulos, { once: true });
+  } else iniciarTitulos();
 
   // Se o deck abriu em segundo plano, a datilografia entra quando a aba
   // ganha foco. Um deck de aula costuma ser aberto assim: fica pronto
@@ -1482,15 +1608,6 @@ BLOQUEADAS
           sl.getBoundingClientRect().bottom > 0) armarDatilografia(sl, 120);
     });
   });
-
-  // Rede de segurança: nada pode ficar invisível, aconteça o que
-  // acontecer com os temporizadores.
-  setTimeout(function () {
-    document.querySelectorAll(".letra").forEach(function (l) {
-      l.className = "letra letra--batida";
-    });
-    document.querySelectorAll(".cursor").forEach(function (c) { c.remove(); });
-  }, 9000);
 
   /* --- a dica some depois da primeira navegação ---------------- */
   var dica = document.getElementById("dica");
@@ -1510,7 +1627,10 @@ BLOQUEADAS
   (function coruja() {
     var tela = document.getElementById("fluido");
     var video = document.getElementById("coruja");
-    if (!tela || !video) return;
+    function pronto() {
+      if (window.preloadApresentacao) window.preloadApresentacao.pronto();
+    }
+    if (!tela || !video) { pronto(); return; }
 
     // Uma trava única. Antes havia duas checagens soltas e, se o vídeo
     // simplesmente não carregasse, NENHUMA das duas disparava: o hero
@@ -1521,6 +1641,11 @@ BLOQUEADAS
       if (decidido) return;
       decidido = true;
       document.documentElement.classList.add("sem-webgl");
+      var poster = new Image();
+      poster.onload = pronto;
+      poster.onerror = pronto;
+      poster.src = video.poster;
+      if (poster.complete) pronto();
       video.loop = true;
       video.play().catch(function () { /* autoplay bloqueado: fica o pôster */ });
     }
@@ -1538,6 +1663,12 @@ BLOQUEADAS
       if (!motor) { semWebGL(); return; }
       decidido = true;
       window.__coruja = motor;   // usado só para diagnóstico
+      requestAnimationFrame(function quadroPronto() {
+        if (motor.diagnostico().temQuadro) pronto();
+        else if (document.documentElement.classList.contains("carregando")) {
+          requestAnimationFrame(quadroPronto);
+        }
+      });
     }
 
     if (video.readyState >= 2) ligar();

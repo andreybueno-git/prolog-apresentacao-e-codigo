@@ -460,6 +460,7 @@ window.iniciarCoruja = function (opcoes) {
   var alvoTempo = 0, tempoSuave = 0;
 
   function registrar(clienteX, clienteY) {
+    if (document.documentElement.classList.contains("carregando")) return;
     var r = tela.getBoundingClientRect();
     var nx = (clienteX - r.left) / r.width;
     var ny = 1.0 - (clienteY - r.top) / r.height;
@@ -683,7 +684,11 @@ window.iniciarCoruja = function (opcoes) {
   }
 
   requestAnimationFrame(function (t) { ultimo = t; passo(t); });
-  setTimeout(convite, 700);
+  if (document.documentElement.classList.contains("carregando")) {
+    document.addEventListener("apresentacao:aberta", function () {
+      setTimeout(convite, 700);
+    }, { once: true });
+  } else setTimeout(convite, 700);
 
   return {
     parar: function () { vivo = false; },

@@ -9,13 +9,17 @@ Material do **Grupo 4** para o trabalho de Paradigmas de Linguagens de Programa�
 | Arquivo | Conteúdo |
 | --- | --- |
 | [index.html](index.html) | Apresentação com os seis tópicos e demonstração visual de backtracking. |
-| [fluido.js](fluido.js) e [assets](assets) | Efeito visual, imagem e vídeo usados pela apresentação. |
+| [abertura.css](abertura.css), [fluido.js](fluido.js) e [assets](assets) | Abertura em vídeo, estilos e efeito visual interativo da apresentação. |
 | [recomendacao_academica.pl](recomendacao_academica.pl) | Código enviado por Andrey, com histórico por situação: aprovado, reprovado ou cursando. |
 | [recomendacao.pl](recomendacao.pl) | Exemplo original que acompanha os slides, com histórico por notas. |
 
 Os dois programas possuem bases de conhecimento e predicados diferentes. **Carregue apenas um deles por sessão do Prolog.**
 
 ## Apresentação
+
+A abertura traz um vídeo de seis segundos, gerado no Higgsfield: uma gota de tinta forma uma árvore e se transforma em uma coruja. O vídeo ocupa a tela inteira e termina antes de abrir os slides. Use **Pular abertura** ou `Esc` para entrar antes.
+
+A reprodução é silenciosa. Em telas estreitas, as laterais são recortadas para preencher a tela sem distorção. A preferência por movimento reduzido é respeitada; se o vídeo não carregar, a apresentação continua acessível.
 
 Abra o link acima ou sirva os arquivos localmente, na pasta deste repositório:
 
@@ -115,7 +119,7 @@ Esses são os dados do exemplo que acompanha os slides. São diferentes dos dado
 
 ## Sobre os materiais
 
-A apresentação, seus recursos visuais e `recomendacao.pl` foram preservados a partir do [repositório original da apresentação](https://github.com/andreybueno-git/paradigmas-prolog). `recomendacao_academica.pl` foi incluído conforme o arquivo enviado por Andrey.
+A apresentação, seus recursos visuais originais e `recomendacao.pl` vieram do [repositório original da apresentação](https://github.com/andreybueno-git/paradigmas-prolog). `recomendacao_academica.pl` foi incluído conforme o arquivo enviado por Andrey.
 
 Integrantes: Rayane, Andrey Vida Leve, Pedro Henrique, Gabriel Silva e Guilherme Alves. Professora: Fernanda Pereira Gomes.
 
