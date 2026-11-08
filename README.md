@@ -4,6 +4,12 @@ Material do **Grupo 4** para o trabalho de Paradigmas de Linguagens de Programa�
 
 **[Abrir a apresentação](https://andreybueno-git.github.io/prolog-apresentacao-e-codigo/)**
 
+## Minicurso de Prolog
+
+**[Abrir o minicurso](https://andreybueno-git.github.io/prolog-apresentacao-e-codigo/minicurso/)**
+
+Minicurso introdutório (programação, algoritmos, fatos, regras, consultas, listas, aritmética e recursão) no mesmo visual da apresentação, com a abertura em vídeo e a coruja de tinta. Arquivo único em [minicurso/index.html](minicurso/index.html): vídeos e fontes vão embutidos, então também abre direto no navegador, sem servidor.
+
 ## Arquivos
 
 | Arquivo | Conteúdo |
