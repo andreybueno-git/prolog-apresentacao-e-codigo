@@ -4,6 +4,20 @@ Material do **Grupo 4** para o trabalho de Paradigmas de Linguagens de Programa�
 
 **[Abrir a apresentação](https://andreybueno-git.github.io/prolog-apresentacao-e-codigo/)**
 
+## Ambiente Prolog do grupo
+
+**[Abrir o ambiente](https://andreybueno-git.github.io/prolog-apresentacao-e-codigo/ambiente/)**
+
+SWI-Prolog de verdade rodando no navegador (WebAssembly), no visual do minicurso. Editor com cores e marcação de erros por linha, consultas uma resposta por vez (`;` para a próxima, Esc para parar, inclusive laços infinitos), arquivos salvos no navegador, exemplos do minicurso, abrir e baixar `.pl` e **Compartilhar**, que gera um link com o código dentro para mandar ao grupo. Funciona no celular.
+
+O SWI-Prolog em [ambiente/swipl](ambiente/swipl) vem do pacote [swipl-wasm](https://github.com/SWI-Prolog/npm-swipl-wasm) (licença BSD-2-Clause, em `LICENSE.txt`).
+
+## Guia de estudo: fatos e consultas
+
+**[Abrir o guia](https://andreybueno-git.github.io/prolog-apresentacao-e-codigo/guia/)**
+
+Teoria, erros comuns, roteiro da parte de fatos e consultas, perguntas do público, exercícios com gabarito e um laboratório simplificado que funciona offline.
+
 ## Minicurso de Prolog
 
 **[Abrir o minicurso](https://andreybueno-git.github.io/prolog-apresentacao-e-codigo/minicurso/)**
