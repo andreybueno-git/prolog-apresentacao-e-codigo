@@ -175,6 +175,7 @@ button{font-family:inherit}
 .chip.leve{font-size:.78rem;border-style:dashed;box-shadow:none;background:var(--papel-alto)}
 .entrada{border-top:3px double var(--tinta);padding:.8rem .9rem calc(.8rem + env(safe-area-inset-bottom));background:var(--papel-alto)}
 .entrada__rot{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--carbono);margin:0 0 .4rem}
+.entrada__rot b{color:var(--fita);font-size:1.15em}
 .entrada__linha{display:flex;align-items:stretch;gap:.6rem}
 .entrada__pr{font-weight:700;color:var(--fita);font-size:calc(var(--cod-cons) * 1.6);line-height:1;padding-top:.45rem;font-family:var(--display);font-weight:900}
 .entrada__linha .botao{min-height:auto;padding:.6rem 1.1rem;font-size:.85rem}
@@ -335,10 +336,9 @@ dialog::backdrop{background:rgba(43,39,34,.35)}
         <div class="sugestoes" id="sugestoes" aria-label="Consultas sugeridas"></div>
       </div>
       <form class="entrada" id="form-q" autocomplete="off">
-        <label class="entrada__rot" for="q">Escreva sua pergunta</label>
+        <label class="entrada__rot" for="q">Escreva sua pergunta, começando com <b>?-</b></label>
         <div class="entrada__linha">
-          <span class="entrada__pr" aria-hidden="true">?-</span>
-          <textarea id="q" rows="2" placeholder="gosta(Quem, pizza)." spellcheck="false" autocapitalize="off" autocorrect="off" enterkeyhint="go"></textarea>
+          <textarea id="q" rows="2" placeholder="?- gosta(Quem, pizza)." spellcheck="false" autocapitalize="off" autocorrect="off" enterkeyhint="go"></textarea>
           <button class="botao botao--fita" id="b-consultar" type="submit">Consultar</button>
         </div>
         <div class="entrada__acoes">
