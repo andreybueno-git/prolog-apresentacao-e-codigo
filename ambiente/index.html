@@ -20,9 +20,10 @@
   --fita:#A83A2B;--fita-escura:#8C3024;--fita-fraca:#D9B8B1;
   --mono:'Courier Prime','Courier New',Courier,ui-monospace,monospace;
   --display:'Doto','Courier Prime',monospace;
-  --cod:15px;--linha-cod:1.6;
+  --cod:15px;--cod-cons:15px;--linha-cod:1.6;
+  --c-fato:#1F4E8C;--c-regra:#A83A2B;--c-atomo:#3F6B1F;--c-var:#8A5A00;--c-num:#6A3D86;--c-str:#6B4A2B;
   --topo:3.6rem;
-  --z-painel:10;--z-gaveta:30;--z-dialogo:40;--z-aviso:50;
+  --z-painel:10;--z-janela:25;--z-gaveta:30;--z-dialogo:40;--z-aviso:50;
 }
 *,*::before,*::after{box-sizing:border-box}
 html,body{height:100%}
@@ -61,7 +62,13 @@ button{font-family:inherit}
 .botao kbd{font-family:inherit;font-weight:400;opacity:.75;font-size:.7rem;text-transform:none}
 .icone{width:1.05em;height:1.05em;flex:none}
 
-.mesa{display:grid;grid-template-columns:15.5rem minmax(0,1.15fr) minmax(0,1fr);min-height:0}
+.mesa{display:grid;grid-template-columns:15.5rem minmax(0,var(--ed,1.15fr)) 9px minmax(0,var(--co,1fr));min-height:0}
+.solto .mesa{grid-template-columns:15.5rem minmax(0,1fr) 0 0}
+.divisor{position:relative;cursor:col-resize;background:var(--papel);border-right:1px solid var(--tinta);touch-action:none;outline-offset:-2px}
+.divisor::before{content:"";position:absolute;left:3px;top:50%;width:3px;height:2.6rem;transform:translateY(-50%);border-left:1px dotted var(--carbono);border-right:1px dotted var(--carbono)}
+.divisor:hover,.divisor.arrastando{background:var(--fita-fraca)}
+.solto .divisor{display:none}
+.editor-painel{border-right:0}
 .painel{display:flex;flex-direction:column;min-height:0;min-width:0;border-right:1px solid var(--tinta)}
 .painel:last-child{border-right:0}
 .painel__cab{display:flex;align-items:center;gap:.6rem;padding:.55rem .8rem;border-bottom:1px solid var(--tinta);min-height:2.9rem;background:var(--papel)}
@@ -99,30 +106,48 @@ button{font-family:inherit}
 .editor__nums .ruim{color:var(--papel-claro);background:var(--fita)}
 .editor__nums .aviso{color:var(--fita);font-weight:700}
 .editor__area{position:relative;min-width:0;overflow:hidden}
+/* tamanho da fonte do editor controlado por --cod */
 .editor__realce,.editor__texto{position:absolute;inset:0;margin:0;padding:.9rem 1rem 3rem;font-family:var(--mono);font-size:var(--cod);line-height:var(--linha-cod);white-space:pre;overflow:auto;tab-size:4;letter-spacing:0;word-spacing:0;font-variant-ligatures:none}
 .editor__realce{pointer-events:none;color:var(--tinta);overflow:hidden}
 .editor__texto{background:transparent;color:transparent;caret-color:var(--fita);border:0;resize:none;outline:0;-webkit-text-fill-color:transparent}
 .editor__texto::selection{background:rgba(168,58,43,.22);-webkit-text-fill-color:transparent}
 .t-com{color:var(--carbono);font-style:italic}
-.t-str{color:#5b4a2e;text-decoration:underline;text-decoration-color:var(--fita-fraca);text-underline-offset:.18em}
-.t-num{color:var(--fita-escura)}
-.t-var{color:var(--carbono);font-weight:700}
-.t-func{color:var(--tinta);font-weight:700}
-.t-atom{color:var(--tinta)}
+.t-str{color:var(--c-str);text-decoration:underline;text-decoration-color:var(--fita-fraca);text-underline-offset:.18em}
+.t-num{color:var(--c-num)}
+.t-var{color:var(--c-var);font-weight:700}
+.t-fato{color:var(--c-fato);font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-decoration-color:rgba(31,78,140,.28);text-underline-offset:.22em}
+.t-regra{color:var(--c-regra);font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-decoration-color:rgba(168,58,43,.3);text-underline-offset:.22em}
+.t-chamada,.t-func{color:var(--tinta);font-weight:700}
+.t-atom{color:var(--c-atomo)}
 .t-op{color:var(--fita);font-weight:700}
 .t-pont{color:var(--carbono)}
 .t-ponto{color:var(--fita);font-weight:700}
+.editor__nums .n-fato{color:var(--c-fato);font-weight:700}
+.editor__nums .n-regra{color:var(--c-regra);font-weight:700}
+.legenda{display:flex;flex-wrap:wrap;gap:.35rem .8rem;font-size:.74rem;color:var(--carbono);align-items:center}
+.lg{display:inline-flex;align-items:center;gap:.3rem;white-space:nowrap}
+.lg i{width:.7rem;height:.7rem;display:inline-block;border:1px solid var(--tinta)}
+.lg b{color:var(--tinta);font-variant-numeric:tabular-nums}
+.lg-fato i{background:var(--c-fato)}.lg-regra i{background:var(--c-regra)}.lg-atomo i{background:var(--c-atomo)}.lg-var i{background:var(--c-var)}.lg-num i{background:var(--c-num)}
+.lg-fato{color:var(--c-fato);font-weight:700}.lg-regra{color:var(--c-regra);font-weight:700}
+.zoom{display:inline-flex;border:1px solid var(--tinta);flex:none}
+.zoom button{appearance:none;background:var(--papel-alto);border:0;font-family:var(--mono);font-weight:700;font-size:.78rem;padding:.3rem .5rem;cursor:pointer;color:var(--tinta);min-width:2.1rem}
+.zoom button+button{border-left:1px solid var(--tinta)}
+.zoom button:hover{color:var(--fita);background:var(--papel-claro)}
 .editor__barra{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.55rem .8rem;border-top:1px solid var(--tinta);background:var(--papel)}
 .editor__barra .estado{font-size:.75rem;color:var(--carbono);margin-left:auto;text-align:right;min-width:0}
+.editor__barra .legenda{flex-basis:100%;order:3;padding-top:.15rem;border-top:1px dotted var(--regra);margin-top:.15rem}
 .editor__barra .estado.ruim{color:var(--fita);font-weight:700}
 
 /* ================= consultas ================= */
 .consultas{background:var(--papel)}
-.console{flex:1;min-height:0;overflow:auto;padding:.9rem 1rem 1rem;font-size:var(--cod);line-height:1.55;white-space:pre-wrap;word-break:break-word;overscroll-behavior:contain}
+.console{flex:1;min-height:0;overflow:auto;padding:.9rem 1rem 1rem;font-size:var(--cod-cons);line-height:1.55;white-space:pre-wrap;word-break:break-word;overscroll-behavior:contain}
 .console>div{margin:0}
 .c-q{font-weight:700;margin-top:.7rem!important}
 .c-q::before{content:"?- ";color:var(--fita)}
-.c-r{color:var(--fita);font-weight:700}
+.c-r{color:var(--tinta);font-weight:700;border-left:3px solid var(--fita);padding-left:.55rem}
+.c-r .t-var{color:var(--c-var)}.c-r .t-atom{color:var(--c-atomo)}.c-r .t-num{color:var(--c-num)}
+.c-sim{color:var(--fita);font-weight:700}
 .c-f{color:var(--carbono);font-weight:700}
 .c-e{color:var(--fita);font-style:italic;border-left:2px solid var(--fita);padding-left:.6rem;margin:.2rem 0!important}
 .c-w{color:var(--carbono);font-style:italic;border-left:1px solid var(--carbono-fraco);padding-left:.6rem;margin:.2rem 0!important}
@@ -137,15 +162,25 @@ button{font-family:inherit}
 .carregando{display:flex;align-items:center;gap:.7rem;color:var(--carbono);font-size:.85rem;white-space:normal}
 .barra-prog{flex:1;height:6px;border:1px solid var(--tinta);background:var(--papel-alto);position:relative;overflow:hidden;max-width:14rem}
 .barra-prog i{position:absolute;inset:0;width:var(--p,0%);background:var(--fita);transition:width .2s}
-.sugestoes{display:flex;gap:.4rem;overflow-x:auto;padding:.5rem .8rem;border-top:1px dashed var(--regra);scrollbar-width:thin}
-.sugestoes:empty{display:none}
-.chip{appearance:none;font-family:var(--mono);font-size:.78rem;background:var(--papel-alto);color:var(--tinta);border:1px dashed var(--carbono);padding:.25rem .55rem;cursor:pointer;white-space:nowrap;flex:none}
-.chip:hover{border-style:solid;border-color:var(--fita);color:var(--fita)}
-.entrada{border-top:1px solid var(--tinta);padding:.6rem .8rem calc(.6rem + env(safe-area-inset-bottom));background:var(--papel-alto)}
-.entrada__linha{display:flex;align-items:center;gap:.5rem}
-.entrada__pr{font-weight:700;color:var(--fita);font-size:1.05rem}
-.entrada input{flex:1;min-width:0;font-family:var(--mono);font-size:16px;background:var(--papel-claro);color:var(--tinta);border:1px solid var(--tinta);padding:.5rem .6rem;border-radius:0}
-.entrada input:focus{outline:2px solid var(--fita);outline-offset:0}
+.sug-bloco{border-top:1px dashed var(--regra);padding:.55rem .8rem .6rem;max-height:40%;overflow:auto}
+.sug-tit{margin:0 0 .45rem;font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--fita);display:flex;justify-content:space-between;gap:.5rem}
+.sug-tit button{appearance:none;background:none;border:0;font:inherit;color:var(--carbono);cursor:pointer;text-transform:uppercase}
+.sug-tit button:hover{color:var(--fita)}
+.sugestoes{display:flex;flex-wrap:wrap;gap:.45rem}
+.sug-bloco.fechado .sugestoes{display:none}
+.chip{appearance:none;font-family:var(--mono);font-size:calc(var(--cod-cons) * .9);background:var(--papel-claro);color:var(--tinta);border:1px solid var(--tinta);box-shadow:2px 2px 0 var(--carbono-fraco);padding:.35rem .65rem;cursor:pointer;white-space:nowrap;text-align:left}
+.chip:hover{border-color:var(--fita);color:var(--fita);box-shadow:2px 2px 0 var(--fita-fraca)}
+.chip:active{transform:translate(2px,2px);box-shadow:none}
+.chip .t-var{color:var(--c-var)}.chip .t-atom{color:var(--c-atomo)}.chip .t-num{color:var(--c-num)}
+.chip.leve{font-size:.78rem;border-style:dashed;box-shadow:none;background:var(--papel-alto)}
+.entrada{border-top:3px double var(--tinta);padding:.8rem .9rem calc(.8rem + env(safe-area-inset-bottom));background:var(--papel-alto)}
+.entrada__rot{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--carbono);margin:0 0 .4rem}
+.entrada__linha{display:flex;align-items:stretch;gap:.6rem}
+.entrada__pr{font-weight:700;color:var(--fita);font-size:calc(var(--cod-cons) * 1.6);line-height:1;padding-top:.45rem;font-family:var(--display);font-weight:900}
+.entrada__linha .botao{min-height:auto;padding:.6rem 1.1rem;font-size:.85rem}
+.entrada textarea{flex:1;min-width:0;font-family:var(--mono);font-weight:700;font-size:max(18px, calc(var(--cod-cons) * 1.3));line-height:1.45;background:var(--papel-claro);color:var(--tinta);border:2px solid var(--tinta);box-shadow:inset 0 2px 0 rgba(43,39,34,.06);padding:.6rem .75rem;border-radius:0;resize:vertical;min-height:4.4em;max-height:40vh}
+.entrada textarea::placeholder{color:var(--carbono-fraco);font-weight:400}
+.entrada textarea:focus{outline:3px solid var(--fita);outline-offset:0;border-color:var(--tinta)}
 .entrada__acoes{display:flex;gap:.45rem;margin-top:.5rem;align-items:center;flex-wrap:wrap}
 .entrada__dica{font-size:.72rem;color:var(--carbono);margin-left:auto}
 .entrada__dica kbd{font-family:inherit;border:1px solid var(--regra);padding:0 .25rem;background:var(--papel-claro)}
@@ -179,10 +214,22 @@ dialog::backdrop{background:rgba(43,39,34,.35)}
 .aviso-flutuante{position:fixed;left:50%;top:calc(var(--topo) + .8rem);transform:translateX(-50%);z-index:var(--z-aviso);background:var(--tinta);color:var(--papel-claro);padding:.55rem .9rem;font-size:.85rem;box-shadow:3px 3px 0 var(--fita);max-width:calc(100vw - 2rem);opacity:0;pointer-events:none;transition:opacity .2s}
 .aviso-flutuante.ver{opacity:1}
 .fundo-gaveta{display:none}
+.consultas.flutuante{position:fixed;z-index:var(--z-janela);border:2px solid var(--tinta);box-shadow:8px 8px 0 rgba(43,39,34,.32);resize:both;overflow:hidden;min-width:320px;min-height:280px;max-width:calc(100vw - 8px);max-height:calc(100dvh - 8px)}
+.consultas.flutuante .painel__cab{cursor:move;background:var(--tinta);color:var(--papel-claro);touch-action:none;user-select:none}
+.consultas.flutuante .painel__tit{color:var(--papel-claro)}
+.consultas.flutuante .painel__cab .botao{color:var(--papel-claro);border-color:var(--papel-claro)}
+.consultas.flutuante .painel__cab .zoom{border-color:var(--papel-claro)}
+.consultas.flutuante .painel__cab .zoom button{background:transparent;color:var(--papel-claro)}
+.consultas.flutuante .painel__cab .zoom button+button{border-left-color:var(--papel-claro)}
+.consultas.flutuante::after{content:"";position:absolute;right:2px;bottom:2px;width:12px;height:12px;border-right:2px solid var(--fita);border-bottom:2px solid var(--fita);pointer-events:none}
+.arrastando-janela,.arrastando-janela *{user-select:none!important;cursor:move!important}
+.arrastando-div,.arrastando-div *{user-select:none!important;cursor:col-resize!important}
+.so-largo{display:inline-flex}
 
 /* ================= responsivo ================= */
 @media (max-width:1180px){
-  .mesa{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+  .mesa{grid-template-columns:minmax(0,var(--ed,1.1fr)) 9px minmax(0,var(--co,1fr))}
+  .solto .mesa{grid-template-columns:minmax(0,1fr) 0 0}
   .arquivos{position:fixed;top:0;left:0;bottom:0;width:min(20rem,86vw);z-index:var(--z-gaveta);transform:translateX(-102%);transition:transform .25s cubic-bezier(.25,1,.5,1);box-shadow:6px 0 0 rgba(43,39,34,.15);border-right:2px solid var(--tinta)}
   .gaveta-aberta .arquivos{transform:none}
   .gaveta-aberta .fundo-gaveta{display:block;position:fixed;inset:0;z-index:calc(var(--z-gaveta) - 1);background:rgba(43,39,34,.3)}
@@ -198,7 +245,8 @@ dialog::backdrop{background:rgba(43,39,34,.35)}
   .marca__logo{font-size:1.3rem}
   .marca__sub,.motor__txt,.topo__acoes .rotulo-largo{display:none}
   .topo{gap:.5rem;padding-right:.6rem}
-  .mesa{grid-template-columns:minmax(0,1fr)}
+  .mesa,.solto .mesa{grid-template-columns:minmax(0,1fr)}
+  .divisor,.so-largo{display:none!important}
   .mesa>.editor-painel,.mesa>.consultas{display:none;border-right:0}
   .app[data-aba="codigo"] .editor-painel,.app[data-aba="consultas"] .consultas{display:flex}
   .abas{display:grid;grid-template-columns:repeat(3,1fr);border-top:3px double var(--tinta);background:var(--papel);padding-bottom:env(safe-area-inset-bottom)}
@@ -255,6 +303,7 @@ dialog::backdrop{background:rgba(43,39,34,.35)}
       <div class="painel__cab">
         <input class="nome-arq" id="nome" type="text" aria-label="Nome do arquivo" spellcheck="false">
         <span class="salvo" id="salvo"></span>
+        <span class="zoom" role="group" aria-label="Tamanho da letra do código"><button type="button" data-zoom="cod" data-d="-1" aria-label="Diminuir letra do código">A−</button><button type="button" data-zoom="cod" data-d="1" aria-label="Aumentar letra do código">A+</button></span>
         <button class="botao botao--leve" id="b-baixar" type="button" title="Baixar como .pl"><svg class="icone"><use href="#i-baixar"/></svg>.pl</button>
       </div>
       <div class="editor">
@@ -267,23 +316,35 @@ dialog::backdrop{background:rgba(43,39,34,.35)}
       <div class="editor__barra">
         <button class="botao botao--fita" id="b-carregar" type="button"><svg class="icone"><use href="#i-play"/></svg>Carregar código <kbd>Ctrl+Enter</kbd></button>
         <span class="estado" id="estado-cod" aria-live="polite"></span>
+        <div class="legenda" id="legenda" aria-live="polite"></div>
       </div>
     </section>
 
+    <div class="divisor" id="divisor" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Arraste para mudar o tamanho do código e das consultas" title="Arraste para mudar o tamanho"></div>
+
     <section class="painel consultas" aria-label="Consultas">
-      <div class="painel__cab"><h2 class="painel__tit">Consultas</h2><button class="botao botao--leve" id="b-limpar" type="button">Limpar</button></div>
+      <div class="painel__cab" id="cab-consultas">
+        <h2 class="painel__tit">Consultas</h2>
+        <span class="zoom" role="group" aria-label="Tamanho da letra das consultas" style="margin-left:auto"><button type="button" data-zoom="cod-cons" data-d="-1" aria-label="Diminuir letra das consultas">A−</button><button type="button" data-zoom="cod-cons" data-d="1" aria-label="Aumentar letra das consultas">A+</button></span>
+        <button class="botao botao--leve so-largo" id="b-soltar" type="button" title="Soltar as consultas numa janela que você pode mover e redimensionar" style="margin-left:0">Soltar</button>
+        <button class="botao botao--leve" id="b-limpar" type="button" style="margin-left:0">Limpar</button>
+      </div>
       <div class="console" id="console" aria-live="polite"></div>
-      <div class="sugestoes" id="sugestoes" aria-label="Consultas sugeridas"></div>
+      <div class="sug-bloco" id="sug-bloco" hidden>
+        <p class="sug-tit"><span>Escolha uma consulta</span><button type="button" id="b-sug" aria-expanded="true">esconder</button></p>
+        <div class="sugestoes" id="sugestoes" aria-label="Consultas sugeridas"></div>
+      </div>
       <form class="entrada" id="form-q" autocomplete="off">
+        <label class="entrada__rot" for="q">Escreva sua pergunta</label>
         <div class="entrada__linha">
-          <label class="entrada__pr" for="q">?-</label>
-          <input id="q" type="text" placeholder="gosta(Quem, pizza)." spellcheck="false" autocapitalize="off" autocorrect="off" enterkeyhint="go">
+          <span class="entrada__pr" aria-hidden="true">?-</span>
+          <textarea id="q" rows="2" placeholder="gosta(Quem, pizza)." spellcheck="false" autocapitalize="off" autocorrect="off" enterkeyhint="go"></textarea>
           <button class="botao botao--fita" id="b-consultar" type="submit">Consultar</button>
         </div>
         <div class="entrada__acoes">
           <button class="botao" id="b-prox" type="button" disabled>Próxima ;</button>
           <button class="botao" id="b-parar" type="button" disabled>Parar</button>
-          <span class="entrada__dica"><kbd>;</kbd> próxima · <kbd>Esc</kbd> parar · <kbd>↑</kbd><kbd>↓</kbd> histórico</span>
+          <span class="entrada__dica"><kbd>Enter</kbd> consulta · <kbd>Shift+Enter</kbd> nova linha · <kbd>;</kbd> próxima · <kbd>Esc</kbd> parar · <kbd>↑</kbd><kbd>↓</kbd> histórico</span>
         </div>
       </form>
     </section>
@@ -315,12 +376,17 @@ dialog::backdrop{background:rgba(43,39,34,.35)}
     <h3>Atalhos</h3>
     <table>
       <tr><td><kbd>Ctrl</kbd>+<kbd>Enter</kbd></td><td>Carregar o código</td></tr>
-      <tr><td><kbd>Enter</kbd></td><td>Fazer a consulta</td></tr>
+      <tr><td><kbd>Enter</kbd></td><td>Fazer a consulta (<kbd>Shift</kbd>+<kbd>Enter</kbd> quebra a linha)</td></tr>
       <tr><td><kbd>;</kbd> ou <kbd>Enter</kbd> vazio</td><td>Próxima resposta</td></tr>
       <tr><td><kbd>.</kbd> ou <kbd>Esc</kbd></td><td>Parar (também interrompe laços infinitos)</td></tr>
       <tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>Consultas anteriores</td></tr>
       <tr><td><kbd>Tab</kbd></td><td>Indentar no editor</td></tr>
+      <tr><td>A− / A+</td><td>Tamanho da letra do código e das consultas (bom para projetar)</td></tr>
+      <tr><td>Divisória</td><td>Arraste a faixa entre o código e as consultas para mudar o tamanho</td></tr>
+      <tr><td>Soltar</td><td>Transforma as consultas numa janela: arraste pela barra preta e redimensione pelo canto</td></tr>
     </table>
+    <h3>Cores do código</h3>
+    <p><b style="color:var(--c-fato)">Azul</b>: nome de um fato. <b style="color:var(--c-regra)">Vermelho</b>: nome de uma regra e o <code>:-</code>. <span style="color:var(--c-atomo)">Verde</span>: átomos (nomes como <code>ana</code>, <code>pizza</code>). <b style="color:var(--c-var)">Âmbar</b>: variáveis. <span style="color:var(--c-num)">Roxo</span>: números. Os números das linhas também ficam azuis (fato) ou vermelhos (regra).</p>
     <h3>Lembretes de Prolog</h3>
     <table>
       <tr><td><code>gosta(ana, pizza).</code></td><td>Fato. Nomes em minúscula, termina com ponto.</td></tr>
@@ -498,7 +564,7 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
   function ler() {
     try {
       var j = JSON.parse(localStorage.getItem(CHAVE) || "null");
-      if (j && Array.isArray(j.arquivos)) estado = { arquivos: j.arquivos, atual: j.atual, historico: j.historico || [] };
+      if (j && Array.isArray(j.arquivos)) estado = { arquivos: j.arquivos, atual: j.atual, historico: j.historico || [], prefs: j.prefs || {} };
     } catch (e) { temArmazem = false; }
   }
   var salvarTimer;
@@ -528,27 +594,83 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
   var texto = $("#texto"), realce = $("#realce"), nums = $("#nums");
   var TOK = /(%[^\n]*)|(\/\*[\s\S]*?(?:\*\/|$))|('(?:[^'\\\n]|\\.)*'?)|("(?:[^"\\\n]|\\.)*"?)|(0'.|\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)|([A-Z_][A-Za-z0-9_]*)|([a-z][A-Za-z0-9_]*)(?=\()|([a-z][A-Za-z0-9_]*)|(:-|\?-|-->|\\\+|=\.\.|\\==|==|\\=|=:=|=\\=|>=|=<|->|\|)|(\.(?=\s|$|%))|([()\[\]{},;!])/g;
   var CLS = [null, "t-com", "t-com", "t-str", "t-str", "t-num", "t-var", "t-func", "t-atom", "t-op", "t-ponto", "t-pont"];
-  function realcar(src) {
-    var out = "", ult = 0, m;
+  // Quebra o texto em pedaços: {txt, cls, linha}
+  function tokenizar(src) {
+    var out = [], ult = 0, m, linha = 1;
+    function texto(s) { if (s) { out.push({ txt: s, cls: null, linha: linha }); linha += (s.match(/\n/g) || []).length; } }
     TOK.lastIndex = 0;
     while ((m = TOK.exec(src))) {
-      if (m.index > ult) out += esc(src.slice(ult, m.index));
+      texto(src.slice(ult, m.index));
       var c = null;
       for (var i = 1; i < CLS.length; i++) if (m[i] !== undefined) { c = CLS[i]; break; }
       if (c === "t-atom" && m[0] === "is") c = "t-op";
-      out += c ? '<span class="' + c + '">' + esc(m[0]) + "</span>" : esc(m[0]);
+      out.push({ txt: m[0], cls: c, linha: linha });
+      linha += (m[0].match(/\n/g) || []).length;
       ult = TOK.lastIndex;
       if (m[0].length === 0) TOK.lastIndex++;
     }
-    return out + esc(src.slice(ult)) + "\n ";
+    texto(src.slice(ult));
+    return out;
+  }
+  function htmlTokens(toks) {
+    return toks.map(function (k) { return k.cls ? '<span class="' + k.cls + '">' + esc(k.txt) + "</span>" : esc(k.txt); }).join("");
+  }
+  // Realce simples (consultas, respostas, sugestões)
+  function realcarTermo(src) { return htmlTokens(tokenizar(src)); }
+
+  // Realce do código: descobre o que é fato e o que é regra.
+  var resumo = { fatos: 0, regras: 0, atomos: 0, vars: 0, linhas: {} };
+  function realcar(src) {
+    var toks = tokenizar(src), clausula = [], prof = 0, ehRegra = false, ehDiretiva = false;
+    var r = { fatos: 0, regras: 0, atomos: 0, vars: 0, linhas: {} }, atomos = {}, nomesVar = {};
+    function fecha(completa) {
+      var cab = null;
+      for (var i = 0; i < clausula.length; i++) { var k = clausula[i]; if (k.cls === "t-func" || k.cls === "t-atom") { cab = k; break; } if (k.cls && k.cls !== "t-com") break; }
+      if (cab && !ehDiretiva) {
+        cab.cls = ehRegra ? "t-regra" : "t-fato";
+        if (completa) { if (ehRegra) r.regras++; else r.fatos++; }
+        r.linhas[cab.linha] = ehRegra ? "n-regra" : "n-fato";
+      }
+      if (ehRegra) clausula.forEach(function (k) { if (k !== cab && k.cls === "t-func") k.cls = "t-chamada"; });
+      clausula = []; prof = 0; ehRegra = false; ehDiretiva = false;
+    }
+    toks.forEach(function (k) {
+      if (!k.cls) { clausula.push(k); return; }
+      if (k.cls === "t-com") return;
+      var primeiro = !clausula.some(function (x) { return x.cls && x.cls !== "t-com"; });
+      clausula.push(k);
+      if (k.cls === "t-atom") atomos[k.txt] = 1;
+      if (k.cls === "t-var" && k.txt !== "_") nomesVar[k.txt] = 1;
+      if (k.txt === "(" || k.txt === "[" || k.txt === "{") prof++;
+      else if (k.txt === ")" || k.txt === "]" || k.txt === "}") prof = Math.max(0, prof - 1);
+      else if (k.cls === "t-op" && (k.txt === ":-" || k.txt === "-->")) { if (primeiro) ehDiretiva = true; else if (prof === 0) ehRegra = true; }
+      else if (k.cls === "t-ponto" && prof === 0) fecha(true);
+    });
+    if (clausula.some(function (x) { return x.cls && x.cls !== "t-com"; })) fecha(false);
+    r.atomos = Object.keys(atomos).length; r.vars = Object.keys(nomesVar).length;
+    resumo = r;
+    return htmlTokens(toks) + "\n ";
+  }
+  function desenharLegenda() {
+    var l = $("#legenda"); if (!l) return;
+    function q(n, s, p) { return n + " " + (n === 1 ? s : p); }
+    l.innerHTML =
+      '<span class="lg lg-fato"><i></i>' + q(resumo.fatos, "fato", "fatos").replace(/^(\d+)/, "<b>$1</b>") + "</span>" +
+      '<span class="lg lg-regra"><i></i>' + q(resumo.regras, "regra", "regras").replace(/^(\d+)/, "<b>$1</b>") + "</span>" +
+      '<span class="lg lg-atomo"><i></i>átomos <b>' + resumo.atomos + "</b></span>" +
+      '<span class="lg lg-var"><i></i>variáveis</span>' +
+      '<span class="lg lg-num"><i></i>números</span>';
   }
   var marcas = {}; // linha -> "ruim" | "aviso"
   function desenharNums() {
     var n = texto.value.split("\n").length, h = "";
-    for (var i = 1; i <= n; i++) h += marcas[i] ? '<span class="' + marcas[i] + '">' + i + "</span>\n" : i + "\n";
+    for (var i = 1; i <= n; i++) {
+      var c = marcas[i] || resumo.linhas[i];
+      h += c ? '<span class="' + c + '">' + i + "</span>\n" : i + "\n";
+    }
     nums.innerHTML = h + " ";
   }
-  function desenhar() { realce.innerHTML = realcar(texto.value); desenharNums(); sincronizar(); }
+  function desenhar() { realce.innerHTML = realcar(texto.value); desenharNums(); desenharLegenda(); sincronizar(); }
   function sincronizar() { realce.scrollTop = texto.scrollTop; realce.scrollLeft = texto.scrollLeft; nums.scrollTop = texto.scrollTop; }
   texto.addEventListener("scroll", sincronizar);
   texto.addEventListener("input", function () {
@@ -764,16 +886,27 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
   var cons = $("#console");
   function rolarConsole() { cons.scrollTop = cons.scrollHeight; }
   function linha(cls, txt) { var d = el("div", cls, txt); cons.appendChild(d); rolarConsole(); return d; }
+  function linhaHtml(cls, html) { var d = el("div", cls); d.innerHTML = html; cons.appendChild(d); rolarConsole(); return d; }
   $("#b-limpar").addEventListener("click", function () { cons.textContent = ""; });
   function desenharSugestoes() {
     var s = $("#sugestoes"); s.textContent = "";
-    var a = arqAtual(); if (!a || !a.sug || !a.sug.length) return;
-    a.sug.forEach(function (q) {
-      var b = el("button", "chip", q); b.type = "button";
+    var a = arqAtual(), lista = (a && a.sug) || [];
+    // Sem sugestões salvas: usa as consultas recentes deste arquivo
+    var recentes = historico.slice(-6).reverse();
+    $("#sug-bloco").hidden = !lista.length && !recentes.length;
+    $("#sug-bloco .sug-tit span").textContent = lista.length ? "Escolha uma consulta" : "Consultas recentes";
+    (lista.length ? lista : recentes).forEach(function (q) {
+      var b = el("button", lista.length ? "chip" : "chip leve"); b.type = "button";
+      b.innerHTML = realcarTermo(q);
+      b.title = "Rodar: " + q;
       b.addEventListener("click", function () { consultar(q); });
       s.appendChild(b);
     });
   }
+  $("#b-sug").addEventListener("click", function () {
+    var bl = $("#sug-bloco"), fechado = bl.classList.toggle("fechado");
+    this.textContent = fechado ? "mostrar" : "esconder"; this.setAttribute("aria-expanded", String(!fechado));
+  });
 
   /* =====================================================================
      MOTOR: SWI-Prolog em WebAssembly
@@ -910,7 +1043,8 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
 
   /* ---- ponte chamada pelo módulo amb.pl ---- */
   window.ambResposta = function (txt, tipo) {
-    linhaResposta = linha("c-r", txt + (tipo === "det" ? "." : ""));
+    var html = txt === "true" ? '<span class="c-sim">true</span>' : realcarTermo(String(txt));
+    linhaResposta = linhaHtml("c-r", html + (tipo === "det" ? "." : ""));
     if (tipo === "det") linhaResposta = null;
   };
   window.ambFalso = function () { linha("c-f", "false."); };
@@ -930,13 +1064,13 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
   function proxima() {
     if (!esperando) return;
     var r = esperando; esperando = null;
-    if (linhaResposta) { linhaResposta.textContent += " ;"; linhaResposta = null; }
+    if (linhaResposta) { linhaResposta.append(" ;"); linhaResposta = null; }
     estadoBotoes("rodando"); r("next");
   }
   function pararAgora() {
     if (esperando) {
       var r = esperando; esperando = null;
-      if (linhaResposta) { linhaResposta.textContent += "."; linhaResposta = null; }
+      if (linhaResposta) { linhaResposta.append("."); linhaResposta = null; }
       r("stop");
     } else if (rodando && P) { P.abort(); }
   }
@@ -954,7 +1088,8 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
     historico = historico.filter(function (h) { return h !== q; }); historico.push(q);
     if (historico.length > 60) historico.shift();
     estado.historico = historico; posHist = -1; salvar(true);
-    linha("c-q", q.replace(/^\?-\s*/, ""));
+    var aS = arqAtual(); if (!aS || !aS.sug || !aS.sug.length) desenharSugestoes();
+    linhaHtml("c-q", realcarTermo(q.replace(/^\?-\s*/, "")));
     rodando = true; estadoBotoes("rodando");
     try {
       await P.forEach("amb:amb_query(T)", { T: q.replace(/^\?-\s*/, "") }, { heartbeat: 10000 });
@@ -962,7 +1097,7 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
       var msg = String(e && e.message || e);
       if (!/abort/i.test(msg)) linha("c-e", traduz(limpaMsg(msg)));
     }
-    if (linhaResposta) { linhaResposta.textContent += "."; linhaResposta = null; }
+    if (linhaResposta) { linhaResposta.append("."); linhaResposta = null; }
     rodando = false; esperando = null; estadoBotoes("livre");
     fimResolvers.splice(0).forEach(function (f) { f(); });
   }
@@ -978,12 +1113,16 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
     campo.value = ""; consultar(v);
   });
   campo.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+      e.preventDefault(); $("#form-q").requestSubmit(); return;
+    }
     if (esperando && !campo.value && (e.key === ";" || e.key === " ")) { e.preventDefault(); proxima(); return; }
     if (esperando && !campo.value && e.key === ".") { e.preventDefault(); pararAgora(); return; }
     if (e.key === "Escape" && (rodando || esperando)) { e.preventDefault(); pararAgora(); return; }
-    if (e.key === "ArrowUp" && historico.length) {
+    var umaLinha = campo.value.indexOf("\n") < 0;
+    if (e.key === "ArrowUp" && historico.length && umaLinha) {
       e.preventDefault(); posHist = posHist < 0 ? historico.length - 1 : Math.max(0, posHist - 1); campo.value = historico[posHist];
-    } else if (e.key === "ArrowDown" && posHist >= 0) {
+    } else if (e.key === "ArrowDown" && posHist >= 0 && umaLinha) {
       e.preventDefault(); posHist++; if (posHist >= historico.length) { posHist = -1; campo.value = ""; } else campo.value = historico[posHist];
     }
   });
@@ -992,10 +1131,113 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
   $("#b-carregar").addEventListener("click", function () { carregarCodigo(true); });
 
   /* =====================================================================
+     LAYOUT: letra, divisória e janela solta
+     ===================================================================== */
+  var mesa = document.querySelector(".mesa"), painelCons = document.querySelector(".consultas"), divisor = $("#divisor");
+  function prefs() { estado.prefs = estado.prefs || {}; return estado.prefs; }
+  function aplicarPrefs() {
+    var p = prefs(), raiz = document.documentElement.style;
+    raiz.setProperty("--cod", (p.cod || 15) + "px");
+    raiz.setProperty("--cod-cons", (p["cod-cons"] || 15) + "px");
+    if (p.ed) { mesa.style.setProperty("--ed", p.ed + "fr"); mesa.style.setProperty("--co", (1 - p.ed) + "fr"); }
+    if (p.solto && innerWidth > 760) soltar(true); else encaixar(true);
+  }
+  document.querySelectorAll("[data-zoom]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var p = prefs(), k = b.dataset.zoom, v = (p[k] || 15) + 2 * (+b.dataset.d);
+      p[k] = Math.max(11, Math.min(32, v));
+      document.documentElement.style.setProperty("--" + k, p[k] + "px");
+      if (k === "cod") desenhar();
+      salvar(); aviso((k === "cod" ? "Código" : "Consultas") + ": letra " + p[k] + " px");
+    });
+  });
+
+  // divisória entre código e consultas
+  function fracao(x) {
+    var ed = document.querySelector(".editor-painel").getBoundingClientRect(), co = painelCons.getBoundingClientRect();
+    var total = co.right - ed.left;
+    return Math.max(0.22, Math.min(0.8, (x - ed.left) / total));
+  }
+  function aplicaFracao(f) {
+    prefs().ed = +f.toFixed(3);
+    mesa.style.setProperty("--ed", f + "fr"); mesa.style.setProperty("--co", (1 - f) + "fr");
+  }
+  divisor.addEventListener("pointerdown", function (e) {
+    e.preventDefault(); divisor.setPointerCapture(e.pointerId); divisor.classList.add("arrastando"); document.body.classList.add("arrastando-div");
+    function mover(ev) { aplicaFracao(fracao(ev.clientX)); sincronizar(); }
+    function soltarDiv() {
+      divisor.classList.remove("arrastando"); document.body.classList.remove("arrastando-div");
+      divisor.removeEventListener("pointermove", mover); divisor.removeEventListener("pointerup", soltarDiv); divisor.removeEventListener("pointercancel", soltarDiv);
+      salvar();
+    }
+    divisor.addEventListener("pointermove", mover); divisor.addEventListener("pointerup", soltarDiv); divisor.addEventListener("pointercancel", soltarDiv);
+  });
+  divisor.addEventListener("dblclick", function () { delete prefs().ed; mesa.style.removeProperty("--ed"); mesa.style.removeProperty("--co"); salvar(); });
+  divisor.addEventListener("keydown", function (e) {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    e.preventDefault(); aplicaFracao(Math.max(0.22, Math.min(0.8, (prefs().ed || 0.535) + (e.key === "ArrowLeft" ? -0.03 : 0.03)))); salvar();
+  });
+
+  // janela solta
+  var app2 = $("#app"), cabCons = $("#cab-consultas"), obsTam = null;
+  function limitarJanela() {
+    var j = prefs().jan; if (!j) return;
+    j.w = Math.min(j.w, innerWidth - 8); j.h = Math.min(j.h, innerHeight - 8);
+    j.x = Math.max(4, Math.min(j.x, innerWidth - 120)); j.y = Math.max(4, Math.min(j.y, innerHeight - 60));
+    painelCons.style.left = j.x + "px"; painelCons.style.top = j.y + "px";
+    painelCons.style.width = j.w + "px"; painelCons.style.height = j.h + "px";
+  }
+  function soltar(silencioso) {
+    var p = prefs();
+    if (!p.jan) {
+      var w = Math.min(560, Math.round(innerWidth * 0.42)), h = Math.min(640, Math.round(innerHeight * 0.72));
+      p.jan = { x: innerWidth - w - 24, y: innerHeight - h - 24, w: w, h: h };
+    }
+    p.solto = true;
+    app2.classList.add("solto"); painelCons.classList.add("flutuante");
+    limitarJanela();
+    $("#b-soltar").textContent = "Encaixar"; $("#b-soltar").title = "Voltar as consultas para o lado do código";
+    if (!obsTam && "ResizeObserver" in window) {
+      obsTam = new ResizeObserver(function () {
+        if (!painelCons.classList.contains("flutuante")) return;
+        var r = painelCons.getBoundingClientRect(); p.jan.w = Math.round(r.width); p.jan.h = Math.round(r.height); salvar();
+      });
+      obsTam.observe(painelCons);
+    }
+    if (!silencioso) { salvar(); aviso("Arraste a janela pela barra preta; redimensione pelo canto"); }
+  }
+  function encaixar(silencioso) {
+    prefs().solto = false;
+    app2.classList.remove("solto"); painelCons.classList.remove("flutuante");
+    ["left", "top", "width", "height"].forEach(function (k) { painelCons.style.removeProperty(k); });
+    $("#b-soltar").textContent = "Soltar"; $("#b-soltar").title = "Soltar as consultas numa janela que você pode mover e redimensionar";
+    if (!silencioso) salvar();
+  }
+  $("#b-soltar").addEventListener("click", function () { painelCons.classList.contains("flutuante") ? encaixar() : soltar(); });
+  cabCons.addEventListener("pointerdown", function (e) {
+    if (!painelCons.classList.contains("flutuante") || e.target.closest("button")) return;
+    e.preventDefault(); cabCons.setPointerCapture(e.pointerId); document.body.classList.add("arrastando-janela");
+    var j = prefs().jan, dx = e.clientX - j.x, dy = e.clientY - j.y;
+    function mover(ev) { j.x = ev.clientX - dx; j.y = ev.clientY - dy; limitarJanela(); }
+    function fim() {
+      document.body.classList.remove("arrastando-janela");
+      cabCons.removeEventListener("pointermove", mover); cabCons.removeEventListener("pointerup", fim); cabCons.removeEventListener("pointercancel", fim);
+      salvar();
+    }
+    cabCons.addEventListener("pointermove", mover); cabCons.addEventListener("pointerup", fim); cabCons.addEventListener("pointercancel", fim);
+  });
+  window.addEventListener("resize", function () {
+    if (innerWidth <= 760 && painelCons.classList.contains("flutuante")) { encaixar(true); prefs().solto = true; }
+    else if (innerWidth > 760 && prefs().solto && !painelCons.classList.contains("flutuante")) soltar(true);
+    else limitarJanela();
+  });
+
+  /* =====================================================================
      INÍCIO
      ===================================================================== */
   ler();
   historico = estado.historico || [];
+  aplicarPrefs();
   boasVindas();
   (async function () {
     var veioLink = await receberLink();
