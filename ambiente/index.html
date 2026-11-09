@@ -20,7 +20,7 @@
   --fita:#A83A2B;--fita-escura:#8C3024;--fita-fraca:#D9B8B1;
   --mono:'Courier Prime','Courier New',Courier,ui-monospace,monospace;
   --display:'Doto','Courier Prime',monospace;
-  --cod:15px;--cod-cons:15px;--linha-cod:1.6;
+  --cod:15px;--cod-cons:15px;--cod-q:calc(var(--cod-cons) * 1.35);--linha-cod:1.6;
   --c-fato:#1F4E8C;--c-regra:#A83A2B;--c-atomo:#3F6B1F;--c-var:#8A5A00;--c-num:#6A3D86;--c-str:#6B4A2B;
   --topo:3.6rem;
   --z-painel:10;--z-janela:25;--z-gaveta:30;--z-dialogo:40;--z-aviso:50;
@@ -162,7 +162,8 @@ button{font-family:inherit}
 .carregando{display:flex;align-items:center;gap:.7rem;color:var(--carbono);font-size:.85rem;white-space:normal}
 .barra-prog{flex:1;height:6px;border:1px solid var(--tinta);background:var(--papel-alto);position:relative;overflow:hidden;max-width:14rem}
 .barra-prog i{position:absolute;inset:0;width:var(--p,0%);background:var(--fita);transition:width .2s}
-.sug-bloco{border-top:1px dashed var(--regra);padding:.55rem .8rem .6rem;max-height:40%;overflow:auto}
+.sug-bloco{border-top:1px dashed var(--regra);padding:.55rem .8rem .6rem;max-height:40%;overflow:auto;flex:0 1 auto;min-height:2.4rem}
+.console{min-height:5.5rem!important;flex:1 1 auto}
 .sug-tit{margin:0 0 .45rem;font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--fita);display:flex;justify-content:space-between;gap:.5rem}
 .sug-tit button{appearance:none;background:none;border:0;font:inherit;color:var(--carbono);cursor:pointer;text-transform:uppercase}
 .sug-tit button:hover{color:var(--fita)}
@@ -173,16 +174,19 @@ button{font-family:inherit}
 .chip:active{transform:translate(2px,2px);box-shadow:none}
 .chip .t-var{color:var(--c-var)}.chip .t-atom{color:var(--c-atomo)}.chip .t-num{color:var(--c-num)}
 .chip.leve{font-size:.78rem;border-style:dashed;box-shadow:none;background:var(--papel-alto)}
-.entrada{border-top:3px double var(--tinta);padding:.8rem .9rem calc(.8rem + env(safe-area-inset-bottom));background:var(--papel-alto)}
-.entrada__rot{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--carbono);margin:0 0 .4rem}
+.entrada{border-top:0;padding:.7rem .9rem calc(.7rem + env(safe-area-inset-bottom));background:var(--papel);display:flex;flex-direction:column;gap:.5rem;height:var(--qh,40%);min-height:10rem;flex:none}
+.entrada__rot{display:block;font-size:.8rem;font-weight:700;text-transform:uppercase;color:var(--carbono);margin:0}
 .entrada__rot b{color:var(--fita);font-size:1.15em}
-.entrada__linha{display:flex;align-items:stretch;gap:.6rem}
-.entrada__pr{font-weight:700;color:var(--fita);font-size:calc(var(--cod-cons) * 1.6);line-height:1;padding-top:.45rem;font-family:var(--display);font-weight:900}
-.entrada__linha .botao{min-height:auto;padding:.6rem 1.1rem;font-size:.85rem}
-.entrada textarea{flex:1;min-width:0;font-family:var(--mono);font-weight:700;font-size:max(18px, calc(var(--cod-cons) * 1.3));line-height:1.45;background:var(--papel-claro);color:var(--tinta);border:2px solid var(--tinta);box-shadow:inset 0 2px 0 rgba(43,39,34,.06);padding:.6rem .75rem;border-radius:0;resize:vertical;min-height:4.4em;max-height:40vh}
-.entrada textarea::placeholder{color:var(--carbono-fraco);font-weight:400}
-.entrada textarea:focus{outline:3px solid var(--fita);outline-offset:0;border-color:var(--tinta)}
-.entrada__acoes{display:flex;gap:.45rem;margin-top:.5rem;align-items:center;flex-wrap:wrap}
+.q-editor{flex:1;min-height:0;display:grid;grid-template-columns:auto minmax(0,1fr);border:2px solid var(--tinta);background:var(--papel-claro);box-shadow:4px 4px 0 var(--carbono-fraco);overflow:hidden}
+.q-editor:focus-within{outline:3px solid var(--fita);outline-offset:0}
+.q-editor .editor__nums{font-size:var(--cod-q);padding:.7rem .5rem .7rem .7rem}
+.q-editor .editor__realce,.q-editor .editor__texto{font-size:var(--cod-q);padding:.7rem .9rem 1.2rem;font-weight:700}
+.q-editor .editor__texto::placeholder{color:var(--carbono-fraco);font-weight:400;-webkit-text-fill-color:var(--carbono-fraco)}
+.divisor-h{height:9px;flex:none;cursor:row-resize;background:var(--papel);border-top:1px solid var(--tinta);border-bottom:1px solid var(--tinta);position:relative;touch-action:none}
+.divisor-h::before{content:"";position:absolute;top:2px;left:50%;height:3px;width:2.6rem;transform:translateX(-50%);border-top:1px dotted var(--carbono);border-bottom:1px dotted var(--carbono)}
+.divisor-h:hover,.divisor-h.arrastando{background:var(--fita-fraca)}
+.arrastando-h,.arrastando-h *{user-select:none!important;cursor:row-resize!important}
+.entrada__acoes{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap}
 .entrada__dica{font-size:.72rem;color:var(--carbono);margin-left:auto}
 .entrada__dica kbd{font-family:inherit;border:1px solid var(--regra);padding:0 .25rem;background:var(--papel-claro)}
 
@@ -256,7 +260,9 @@ dialog::backdrop{background:rgba(43,39,34,.35)}
   .aba .icone{width:1.25rem;height:1.25rem}
   .aba[aria-selected="true"]{color:var(--fita)}
   .aba[aria-selected="true"]::before{content:"";display:block;width:2rem;height:3px;background:var(--fita);margin:-.55rem 0 .3rem}
-  .entrada{padding-bottom:.6rem}
+  .entrada{padding-bottom:.6rem;height:auto;min-height:0}
+  .q-editor{min-height:6.5rem;max-height:30vh}
+  .divisor-h{display:none}
   .entrada__dica{display:none}
   .editor__barra .estado{flex-basis:100%;text-align:left;margin-left:0}
 }
@@ -335,13 +341,18 @@ dialog::backdrop{background:rgba(43,39,34,.35)}
         <p class="sug-tit"><span>Escolha uma consulta</span><button type="button" id="b-sug" aria-expanded="true">esconder</button></p>
         <div class="sugestoes" id="sugestoes" aria-label="Consultas sugeridas"></div>
       </div>
+      <div class="divisor-h" id="divisor-h" role="separator" aria-orientation="horizontal" tabindex="0" aria-label="Arraste para mudar o tamanho da caixa de pergunta" title="Arraste para mudar o tamanho da caixa"></div>
       <form class="entrada" id="form-q" autocomplete="off">
         <label class="entrada__rot" for="q">Escreva sua pergunta, começando com <b>?-</b></label>
-        <div class="entrada__linha">
-          <textarea id="q" rows="2" placeholder="?- gosta(Quem, pizza)." spellcheck="false" autocapitalize="off" autocorrect="off" enterkeyhint="go"></textarea>
-          <button class="botao botao--fita" id="b-consultar" type="submit">Consultar</button>
+        <div class="q-editor">
+          <pre class="editor__nums" id="q-nums" aria-hidden="true"></pre>
+          <div class="editor__area">
+            <pre class="editor__realce" id="q-realce" aria-hidden="true"></pre>
+            <textarea class="editor__texto" id="q" placeholder="?- gosta(Quem, pizza)." spellcheck="false" autocapitalize="off" autocorrect="off" autocomplete="off" wrap="off" enterkeyhint="go"></textarea>
+          </div>
         </div>
         <div class="entrada__acoes">
+          <button class="botao botao--fita" id="b-consultar" type="submit">Consultar</button>
           <button class="botao" id="b-prox" type="button" disabled>Próxima ;</button>
           <button class="botao" id="b-parar" type="button" disabled>Parar</button>
           <span class="entrada__dica"><kbd>Enter</kbd> consulta · <kbd>Shift+Enter</kbd> nova linha · <kbd>;</kbd> próxima · <kbd>Esc</kbd> parar · <kbd>↑</kbd><kbd>↓</kbd> histórico</span>
@@ -1104,7 +1115,19 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
   var fimResolvers = [];
   function esperarFim() { return rodando ? new Promise(function (r) { fimResolvers.push(r); }) : Promise.resolve(); }
 
-  var campo = $("#q");
+  var campo = $("#q"), qRealce = $("#q-realce"), qNums = $("#q-nums");
+  function desenharQ() {
+    qRealce.innerHTML = realcarTermo(campo.value) + "\n ";
+    var n = Math.max(1, campo.value.split("\n").length), h = "";
+    for (var i = 1; i <= n; i++) h += i + "\n";
+    qNums.textContent = h + " ";
+    qRealce.scrollTop = campo.scrollTop; qRealce.scrollLeft = campo.scrollLeft; qNums.scrollTop = campo.scrollTop;
+  }
+  campo.addEventListener("input", desenharQ);
+  desenharQ();
+  campo.addEventListener("scroll", function () { qRealce.scrollTop = campo.scrollTop; qRealce.scrollLeft = campo.scrollLeft; qNums.scrollTop = campo.scrollTop; });
+  var _valorQ = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value");
+  Object.defineProperty(campo, "value", { get: function () { return _valorQ.get.call(this); }, set: function (v) { _valorQ.set.call(this, v); desenharQ(); } });
   $("#form-q").addEventListener("submit", function (e) {
     e.preventDefault();
     var v = campo.value.trim();
@@ -1140,6 +1163,7 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
     raiz.setProperty("--cod", (p.cod || 15) + "px");
     raiz.setProperty("--cod-cons", (p["cod-cons"] || 15) + "px");
     if (p.ed) { mesa.style.setProperty("--ed", p.ed + "fr"); mesa.style.setProperty("--co", (1 - p.ed) + "fr"); }
+    if (p.qh) $("#form-q").style.setProperty("--qh", p.qh + "%");
     if (p.solto && innerWidth > 760) soltar(true); else encaixar(true);
   }
   document.querySelectorAll("[data-zoom]").forEach(function (b) {
@@ -1176,6 +1200,24 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
   divisor.addEventListener("keydown", function (e) {
     if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
     e.preventDefault(); aplicaFracao(Math.max(0.22, Math.min(0.8, (prefs().ed || 0.535) + (e.key === "ArrowLeft" ? -0.03 : 0.03)))); salvar();
+  });
+
+  // divisória entre respostas e caixa de pergunta
+  var divH = $("#divisor-h"), formQ = $("#form-q");
+  function aplicaQh(pct) { pct = Math.max(18, Math.min(75, pct)); prefs().qh = Math.round(pct); formQ.style.setProperty("--qh", pct + "%"); }
+  divH.addEventListener("pointerdown", function (e) {
+    e.preventDefault(); divH.setPointerCapture(e.pointerId); divH.classList.add("arrastando"); document.body.classList.add("arrastando-h");
+    function mover(ev) { var r = painelCons.getBoundingClientRect(); aplicaQh(100 * (r.bottom - ev.clientY) / r.height); }
+    function fim() {
+      divH.classList.remove("arrastando"); document.body.classList.remove("arrastando-h");
+      divH.removeEventListener("pointermove", mover); divH.removeEventListener("pointerup", fim); divH.removeEventListener("pointercancel", fim); salvar();
+    }
+    divH.addEventListener("pointermove", mover); divH.addEventListener("pointerup", fim); divH.addEventListener("pointercancel", fim);
+  });
+  divH.addEventListener("dblclick", function () { delete prefs().qh; formQ.style.removeProperty("--qh"); salvar(); });
+  divH.addEventListener("keydown", function (e) {
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+    e.preventDefault(); aplicaQh((prefs().qh || 40) + (e.key === "ArrowUp" ? 4 : -4)); salvar();
   });
 
   // janela solta
