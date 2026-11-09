@@ -20,7 +20,7 @@
   --fita:#A83A2B;--fita-escura:#8C3024;--fita-fraca:#D9B8B1;
   --mono:'Courier Prime','Courier New',Courier,ui-monospace,monospace;
   --display:'Doto','Courier Prime',monospace;
-  --cod:15px;--cod-cons:15px;--cod-q:calc(var(--cod-cons) * 1.35);--linha-cod:1.6;
+  --cod:15px;--cod-cons:15px;--cod-q:var(--cod-cons);--linha-cod:1.6;
   --c-fato:#1F4E8C;--c-regra:#A83A2B;--c-atomo:#3F6B1F;--c-var:#8A5A00;--c-num:#6A3D86;--c-str:#6B4A2B;
   --topo:3.6rem;
   --z-painel:10;--z-janela:25;--z-gaveta:30;--z-dialogo:40;--z-aviso:50;
@@ -62,7 +62,7 @@ button{font-family:inherit}
 .botao kbd{font-family:inherit;font-weight:400;opacity:.75;font-size:.7rem;text-transform:none}
 .icone{width:1.05em;height:1.05em;flex:none}
 
-.mesa{display:grid;grid-template-columns:15.5rem minmax(0,var(--ed,1.15fr)) 9px minmax(0,var(--co,1fr));min-height:0}
+.mesa{display:grid;grid-template-columns:15.5rem minmax(0,var(--ed,1fr)) 9px minmax(0,var(--co,1.3fr));min-height:0}
 .solto .mesa{grid-template-columns:15.5rem minmax(0,1fr) 0 0}
 .divisor{position:relative;cursor:col-resize;background:var(--papel);border-right:1px solid var(--tinta);touch-action:none;outline-offset:-2px}
 .divisor::before{content:"";position:absolute;left:3px;top:50%;width:3px;height:2.6rem;transform:translateY(-50%);border-left:1px dotted var(--carbono);border-right:1px dotted var(--carbono)}
@@ -174,13 +174,13 @@ button{font-family:inherit}
 .chip:active{transform:translate(2px,2px);box-shadow:none}
 .chip .t-var{color:var(--c-var)}.chip .t-atom{color:var(--c-atomo)}.chip .t-num{color:var(--c-num)}
 .chip.leve{font-size:.78rem;border-style:dashed;box-shadow:none;background:var(--papel-alto)}
-.entrada{border-top:0;padding:.7rem .9rem calc(.7rem + env(safe-area-inset-bottom));background:var(--papel);display:flex;flex-direction:column;gap:.5rem;height:var(--qh,40%);min-height:10rem;flex:none}
+.entrada{border-top:0;padding:.7rem .9rem calc(.7rem + env(safe-area-inset-bottom));background:var(--papel);display:flex;flex-direction:column;gap:.5rem;height:var(--qh,48%);min-height:10rem;flex:none}
 .entrada__rot{display:block;font-size:.8rem;font-weight:700;text-transform:uppercase;color:var(--carbono);margin:0}
 .entrada__rot b{color:var(--fita);font-size:1.15em}
 .q-editor{flex:1;min-height:0;display:grid;grid-template-columns:auto minmax(0,1fr);border:2px solid var(--tinta);background:var(--papel-claro);box-shadow:4px 4px 0 var(--carbono-fraco);overflow:hidden}
 .q-editor:focus-within{outline:3px solid var(--fita);outline-offset:0}
 .q-editor .editor__nums{font-size:var(--cod-q);padding:.7rem .5rem .7rem .7rem}
-.q-editor .editor__realce,.q-editor .editor__texto{font-size:var(--cod-q);padding:.7rem .9rem 1.2rem;font-weight:700}
+.q-editor .editor__realce,.q-editor .editor__texto{font-size:var(--cod-q);padding:.7rem .9rem 1.2rem}
 .q-editor .editor__texto::placeholder{color:var(--carbono-fraco);font-weight:400;-webkit-text-fill-color:var(--carbono-fraco)}
 .divisor-h{height:9px;flex:none;cursor:row-resize;background:var(--papel);border-top:1px solid var(--tinta);border-bottom:1px solid var(--tinta);position:relative;touch-action:none}
 .divisor-h::before{content:"";position:absolute;top:2px;left:50%;height:3px;width:2.6rem;transform:translateX(-50%);border-top:1px dotted var(--carbono);border-bottom:1px dotted var(--carbono)}
@@ -230,10 +230,18 @@ dialog::backdrop{background:rgba(43,39,34,.35)}
 .arrastando-janela,.arrastando-janela *{user-select:none!important;cursor:move!important}
 .arrastando-div,.arrastando-div *{user-select:none!important;cursor:col-resize!important}
 .so-largo{display:inline-flex}
+.recolher{display:inline-flex}
+@media (min-width:1181px){
+  .sem-arq .mesa{grid-template-columns:minmax(0,var(--ed,1fr)) 9px minmax(0,var(--co,1.3fr))}
+  .sem-arq.solto .mesa{grid-template-columns:minmax(0,1fr) 0 0}
+  .sem-arq .arquivos{display:none}
+  .sem-arq .so-gaveta{display:inline-flex}
+}
+@media (max-width:1180px){.recolher{display:none!important}}
 
 /* ================= responsivo ================= */
 @media (max-width:1180px){
-  .mesa{grid-template-columns:minmax(0,var(--ed,1.1fr)) 9px minmax(0,var(--co,1fr))}
+  .mesa{grid-template-columns:minmax(0,var(--ed,1fr)) 9px minmax(0,var(--co,1.3fr))}
   .solto .mesa{grid-template-columns:minmax(0,1fr) 0 0}
   .arquivos{position:fixed;top:0;left:0;bottom:0;width:min(20rem,86vw);z-index:var(--z-gaveta);transform:translateX(-102%);transition:transform .25s cubic-bezier(.25,1,.5,1);box-shadow:6px 0 0 rgba(43,39,34,.15);border-right:2px solid var(--tinta)}
   .gaveta-aberta .arquivos{transform:none}
@@ -297,7 +305,7 @@ dialog::backdrop{background:rgba(43,39,34,.35)}
 
   <div class="mesa">
     <aside class="painel arquivos" id="arquivos" aria-label="Arquivos">
-      <div class="painel__cab"><h2 class="painel__tit">Arquivos</h2><button class="botao botao--leve" id="b-novo" type="button">+ Novo</button><button class="fechar fechar-gaveta" id="b-fechar-gaveta" type="button" aria-label="Fechar arquivos">×</button></div>
+      <div class="painel__cab"><h2 class="painel__tit">Arquivos</h2><button class="botao botao--leve" id="b-novo" type="button">+ Novo</button><button class="botao botao--leve recolher" id="b-recolher" type="button" title="Esconder os arquivos para ganhar espaço" style="margin-left:0">«</button><button class="fechar fechar-gaveta" id="b-fechar-gaveta" type="button" aria-label="Fechar arquivos">×</button></div>
       <div class="arquivos__lista" id="lista"></div>
       <div class="arquivos__pe">
         <button class="botao" id="b-abrir" type="button"><svg class="icone"><use href="#i-abrir"/></svg>Abrir arquivo .pl</button>
@@ -879,7 +887,16 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
   var app = $("#app");
   function abrirGaveta() { document.body.classList.add("gaveta-aberta"); $("#b-gaveta").setAttribute("aria-expanded", "true"); var c = document.querySelector(".item[aria-current='true'] .item__abrir") || document.querySelector(".item__abrir"); if (c) c.focus(); }
   function fecharGaveta() { if (!document.body.classList.contains("gaveta-aberta")) return; document.body.classList.remove("gaveta-aberta"); $("#b-gaveta").setAttribute("aria-expanded", "false"); }
-  $("#b-gaveta").addEventListener("click", function () { document.body.classList.contains("gaveta-aberta") ? fecharGaveta() : abrirGaveta(); });
+  $("#b-gaveta").addEventListener("click", function () {
+    if (innerWidth > 1180) { recolherArquivos(false); return; }
+    document.body.classList.contains("gaveta-aberta") ? fecharGaveta() : abrirGaveta();
+  });
+  function recolherArquivos(sim) {
+    app.classList.toggle("sem-arq", sim);
+    estado.prefs = estado.prefs || {}; estado.prefs.semArq = sim; salvar();
+    if (sim) aviso("Arquivos escondidos. Use o botão Arquivos lá em cima para mostrar.");
+  }
+  $("#b-recolher").addEventListener("click", function () { recolherArquivos(true); });
   $("#fundo-gaveta").addEventListener("click", fecharGaveta);
   $("#b-fechar-gaveta").addEventListener("click", fecharGaveta);
   $("#aba-arquivos").addEventListener("click", abrirGaveta);
@@ -1164,6 +1181,7 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
     raiz.setProperty("--cod-cons", (p["cod-cons"] || 15) + "px");
     if (p.ed) { mesa.style.setProperty("--ed", p.ed + "fr"); mesa.style.setProperty("--co", (1 - p.ed) + "fr"); }
     if (p.qh) $("#form-q").style.setProperty("--qh", p.qh + "%");
+    if (p.semArq) app.classList.add("sem-arq");
     if (p.solto && innerWidth > 760) soltar(true); else encaixar(true);
   }
   document.querySelectorAll("[data-zoom]").forEach(function (b) {
@@ -1199,7 +1217,7 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
   divisor.addEventListener("dblclick", function () { delete prefs().ed; mesa.style.removeProperty("--ed"); mesa.style.removeProperty("--co"); salvar(); });
   divisor.addEventListener("keydown", function (e) {
     if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
-    e.preventDefault(); aplicaFracao(Math.max(0.22, Math.min(0.8, (prefs().ed || 0.535) + (e.key === "ArrowLeft" ? -0.03 : 0.03)))); salvar();
+    e.preventDefault(); aplicaFracao(Math.max(0.22, Math.min(0.8, (prefs().ed || 0.435) + (e.key === "ArrowLeft" ? -0.03 : 0.03)))); salvar();
   });
 
   // divisória entre respostas e caixa de pergunta
@@ -1217,7 +1235,7 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
   divH.addEventListener("dblclick", function () { delete prefs().qh; formQ.style.removeProperty("--qh"); salvar(); });
   divH.addEventListener("keydown", function (e) {
     if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
-    e.preventDefault(); aplicaQh((prefs().qh || 40) + (e.key === "ArrowUp" ? 4 : -4)); salvar();
+    e.preventDefault(); aplicaQh((prefs().qh || 48) + (e.key === "ArrowUp" ? 4 : -4)); salvar();
   });
 
   // janela solta
