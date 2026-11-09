@@ -897,7 +897,7 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
     $("#sug-bloco .sug-tit span").textContent = lista.length ? "Escolha uma consulta" : "Consultas recentes";
     (lista.length ? lista : recentes).forEach(function (q) {
       var b = el("button", lista.length ? "chip" : "chip leve"); b.type = "button";
-      b.innerHTML = realcarTermo(q);
+      b.innerHTML = realcarTermo("?- " + q.replace(/^\?-\s*/, ""));
       b.title = "Rodar: " + q;
       b.addEventListener("click", function () { consultar(q); });
       s.appendChild(b);
