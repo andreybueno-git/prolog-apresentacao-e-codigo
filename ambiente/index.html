@@ -434,6 +434,41 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
      ===================================================================== */
   var EXEMPLOS = [
     {
+      id: "ex-caderno", nome: "Caderno do Sherlock",
+      sug: ["writeln('Olá, mundo!').", "homem(andrey).", "gosta(ana, pizza).", "gosta(ana, sushi).", "gosta(Quem, pizza).", "estava(Quem, cozinha).", "culpado(Quem)."],
+      codigo: [
+        "% Caderno do Sherlock: anote aqui as pistas do caso.",
+        "% Cada pista termina com ponto. Nomes em letra minúscula.",
+        "",
+        ""
+      ].join("\n")
+    },
+    {
+      id: "ex-misterio", nome: "Mistério de Natal (completo)",
+      sug: ["homem(andrey).", "gosta(ana, pizza).", "gosta(ana, sushi).", "gosta(Quem, pizza).", "estava(Quem, cozinha).", "culpado(Quem).", "member(leo, [ana, leo, bia]).", "length([ana, leo, bia], N).", "Sobrou is 8 - 7.", "Total is 3 * 8."],
+      codigo: [
+        "% Mistério de Natal: quem pegou a última fatia de pizza?",
+        "",
+        "% Fatos simples",
+        "homem(andrey).",
+        "mulher(rayane).",
+        "",
+        "% Pistas: do que cada suspeito gosta",
+        "gosta(ana, pizza).",
+        "gosta(leo, pizza).",
+        "gosta(bia, sushi).",
+        "",
+        "% Pistas: onde cada suspeito estava",
+        "estava(ana, biblioteca).",
+        "estava(leo, cozinha).",
+        "estava(bia, cozinha).",
+        "",
+        "% Regra: é culpado SE gosta de pizza E estava na cozinha.",
+        "culpado(P) :- gosta(P, pizza), estava(P, cozinha).",
+        ""
+      ].join("\n")
+    },
+    {
       id: "ex-gostos", nome: "Gostos (minicurso)",
       sug: ["gosta(ana, pizza).", "gosta(Quem, pizza).", "gosta(bia, Comida).", "gosta(_, sushi).", "gosta(ana, X), gosta(bia, X).", "lanche(Quem).", "findall(P, gosta(P, suco), L)."],
       codigo: [
@@ -767,7 +802,7 @@ var AMB_PL = ":- module(amb, [amb_consult/1, amb_query/1]).\n:- use_module(libra
       if (!confirm("Apagar “" + a.nome + "”? Isso não pode ser desfeito.")) return;
       estado.arquivos = estado.arquivos.filter(function (x) { return x.id !== a.id; });
       if (estado.atual === a.id) estado.atual = estado.arquivos[0] ? estado.arquivos[0].id : null;
-      if (!estado.atual) { var n = criarArquivo("meu-programa", EXEMPLOS[4].codigo, []); estado.atual = n.id; }
+      if (!estado.atual) { var n = criarArquivo("meu-programa", EXEMPLOS[6].codigo, []); estado.atual = n.id; }
       salvar(true); abrir(estado.atual); aviso("Arquivo apagado");
     }, "perigo");
     document.body.appendChild(m);
